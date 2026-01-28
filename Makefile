@@ -1,8 +1,8 @@
 CC			= c++
 NAME		= life
 CFLAGS		= -std=c++20 -Wall -Wextra -Werror -I$(DIR_INC)
-SRCFILES	= main.cpp 
-HEADERFILES	= life.hpp
+SRCFILES	= main.cpp Life.cpp
+HEADERFILES	= Life.hpp
 
 DIR_SRC		= src/
 DIR_OBJ		= obj/

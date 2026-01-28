@@ -1,6 +1,8 @@
-#include "life.hpp"
+#include "Life.hpp"
 #include <iostream>
+#include <vector>
+#include <iterator>
 
 int main() {
-	std::cout << "yo";
+
 }

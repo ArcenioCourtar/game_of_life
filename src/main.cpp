@@ -4,5 +4,5 @@
 #include <iterator>
 
 int main() {
-
+	Life data;
 }

@@ -56,11 +56,22 @@ void Life::go_next() {
 }
 
 void Life::display_grid() {
+	int16_t x = m_edges.left;
+	int16_t y = m_edges.up;
+	(void) x, (void) y;
 	Block block = m_grid.at(std::bit_cast<int32_t>(Coords{m_edges.left, m_edges.up}));
 	for (auto iter = block.even.begin(); iter != block.even.end(); iter++)
 	{
 		for(auto iter2 = iter->begin(); iter2 != iter->end(); iter2++)
 			std::cout << *iter2;
 		std::cout << '\n';
+	}
+
+	for (y; y <= m_edges.down; y++)
+	{
+		for (x; x <= m_edges.right; x++)
+		{
+
+		}
 	}
 }

@@ -26,14 +26,14 @@ void Life::initialize_map() {
 }
 
 // POGCHAMP
-BlockHalf &Life::grab_gen(Block &block, bool next) {
-	if (m_generation % 2 == 0 || (m_generation % 2 != 0 && next))
+BlockHalf &Life::grab_gen(Block &block, Gen gen) {
+	if ((m_generation % 2 == 0 && gen == CURRENT)|| (m_generation % 2 != 0 && gen == NEXT))
 		return block.even;
 	else
 		return block.odd;
 }
 
-void Life::set_node(Coords coords, int16_t x, int16_t y, CellState state) {
+void Life::set_node(Coords coords, int16_t x, int16_t y, CellState state, Gen gen) {
 	if (coords.x < m_edges.left || coords.x > m_edges.right 
 		|| coords.y < m_edges.up || coords.y > m_edges.down)
 	{
@@ -47,7 +47,7 @@ void Life::set_node(Coords coords, int16_t x, int16_t y, CellState state) {
 	}
 
 	Block &block = m_grid.at(std::bit_cast<int32_t>(coords));
-	BlockHalf &grid = grab_gen(block, false);
+	BlockHalf &grid = grab_gen(block, gen);
 	grid[y][x] = state;
 }
 
@@ -65,13 +65,5 @@ void Life::display_grid() {
 		for(auto iter2 = iter->begin(); iter2 != iter->end(); iter2++)
 			std::cout << *iter2;
 		std::cout << '\n';
-	}
-
-	for (y; y <= m_edges.down; y++)
-	{
-		for (x; x <= m_edges.right; x++)
-		{
-
-		}
 	}
 }

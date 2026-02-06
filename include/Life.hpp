@@ -50,7 +50,7 @@ class Life {
 		// set node using global coordinates
 		void set_node(int16_t x, int16_t y, CellState state);
 		// set node locating block and picking coords in there
-		void set_node(Coords coords, int16_t x, int16_t y, CellState state);
+		void set_node(Coords coords, int16_t x, int16_t y, CellState state, Gen gen);
 		// convert "raw" coords into one that adheres to the block structure
 		// somefunction()
 
@@ -76,7 +76,7 @@ class Life {
 		// expand map when an edge is reached and a cell across the edge becomes live
 		void expand_map();
 		// get reference to correct map version
-		BlockHalf &grab_gen(Block &block, bool next);
+		BlockHalf &grab_gen(Block &block, Gen gen);
 
 
 		// print location of live cells

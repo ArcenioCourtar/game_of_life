@@ -6,15 +6,15 @@
 #include <bit>
 #define BLOCK_SIZE 4
 
-enum CellState { DEAD = 0, ALIVE = 1 };
+enum CellState { DEAD = '0', ALIVE = '1' };
 enum Gen { CURRENT = 0, NEXT = 1 };
 
 typedef std::array<std::array<CellState, BLOCK_SIZE>, BLOCK_SIZE> BlockHalf;
 
 // [y][x] For more efficient traversal of the grid
 struct Block {
-	std::array<std::array<CellState, BLOCK_SIZE>, BLOCK_SIZE> even = { };
-	std::array<std::array<CellState, BLOCK_SIZE>, BLOCK_SIZE> odd = { };
+	std::array<std::array<CellState, BLOCK_SIZE>, BLOCK_SIZE> even;
+	std::array<std::array<CellState, BLOCK_SIZE>, BLOCK_SIZE> odd;
 };
 
 // x y order
@@ -73,6 +73,8 @@ class Life {
 
 		// initial 4 blocks
 		void initialize_map();
+		// initialize block
+		void init_block(int16_t x, int16_t y);
 		// expand map when an edge is reached and a cell across the edge becomes live
 		void expand_map();
 		// get reference to correct map version

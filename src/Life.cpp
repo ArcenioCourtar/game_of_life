@@ -16,11 +16,20 @@ Life::~Life() {
 	// Destructor
 }
 
+void Life::init_block(int16_t x, int16_t y) {
+	auto new_block = m_grid.insert({std::bit_cast<int32_t>(Coords{x, y}), Block()});
+	auto &test = new_block.first->second;
+	for (auto iter = test.even.begin(); iter != test.even.end(); iter++)
+		iter->fill(DEAD);
+	for (auto iter = test.odd.begin(); iter != test.odd.end(); iter++)
+		iter->fill(DEAD);
+}
+
 void Life::initialize_map() {
-	m_grid.insert({std::bit_cast<int32_t>(Coords{0, 0}), Block()});
-	m_grid.insert({std::bit_cast<int32_t>(Coords{-1, 0}), Block()});
-	m_grid.insert({std::bit_cast<int32_t>(Coords{-1, -1}), Block()});
-	m_grid.insert({std::bit_cast<int32_t>(Coords{0, -1}), Block()});
+	init_block(0, 0);
+	init_block(-1, 0);
+	init_block(-1, -1);
+	init_block(0, -1);
 
 	m_edges.left = -1; m_edges.right = 0; m_edges.up = -1; m_edges.down = 0;
 }
@@ -46,9 +55,8 @@ void Life::set_node(Coords coords, int16_t x, int16_t y, CellState state, Gen ge
 		return;
 	}
 
-	Block &block = m_grid.at(std::bit_cast<int32_t>(coords));
-	BlockHalf &grid = grab_gen(block, gen);
-	grid[y][x] = state;
+	BlockHalf &block = grab_gen(m_grid.at(std::bit_cast<int32_t>(coords)), gen);
+	block[y][x] = state;
 }
 
 void Life::go_next() {
@@ -56,14 +64,19 @@ void Life::go_next() {
 }
 
 void Life::display_grid() {
+	std::string test("HELLO");
 	int16_t x = m_edges.left;
 	int16_t y = m_edges.up;
 	(void) x, (void) y;
-	Block block = m_grid.at(std::bit_cast<int32_t>(Coords{m_edges.left, m_edges.up}));
-	for (auto iter = block.even.begin(); iter != block.even.end(); iter++)
+	for (; y <= m_edges.down; y++)
 	{
-		for(auto iter2 = iter->begin(); iter2 != iter->end(); iter2++)
-			std::cout << *iter2;
-		std::cout << '\n';
+		for (x = m_edges.left; x <= m_edges.right; x++)
+		{
+			BlockHalf block = grab_gen(m_grid.at(std::bit_cast<int32_t>(Coords{x, y})), CURRENT);
+			test += std::string(std::begin(test), std::end(test));
+			std::cout << (char)*(block.begin()->begin());
+		}
 	}
+	
+	std::cout << test;
 }

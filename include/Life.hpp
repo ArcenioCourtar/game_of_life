@@ -9,12 +9,12 @@
 enum CellState { DEAD = '0', ALIVE = '1' };
 enum Gen { CURRENT = 0, NEXT = 1 };
 
-typedef std::array<std::array<CellState, BLOCK_SIZE>, BLOCK_SIZE> BlockHalf;
+typedef std::array<std::array<char, BLOCK_SIZE>, BLOCK_SIZE> BlockHalf;
 
 // [y][x] For more efficient traversal of the grid
 struct Block {
-	std::array<std::array<CellState, BLOCK_SIZE>, BLOCK_SIZE> even;
-	std::array<std::array<CellState, BLOCK_SIZE>, BLOCK_SIZE> odd;
+	std::array<std::array<char, BLOCK_SIZE>, BLOCK_SIZE> even;
+	std::array<std::array<char, BLOCK_SIZE>, BLOCK_SIZE> odd;
 };
 
 // x y order

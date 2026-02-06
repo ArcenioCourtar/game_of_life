@@ -16,12 +16,13 @@ Life::~Life() {
 	// Destructor
 }
 
+// make variable names more clear maybe
 void Life::init_block(int16_t x, int16_t y) {
 	auto new_block = m_grid.insert({std::bit_cast<int32_t>(Coords{x, y}), Block()});
-	auto &test = new_block.first->second;
-	for (auto iter = test.even.begin(); iter != test.even.end(); iter++)
+	auto &block = new_block.first->second;
+	for (auto iter = block.even.begin(); iter != block.even.end(); iter++)
 		iter->fill(DEAD);
-	for (auto iter = test.odd.begin(); iter != test.odd.end(); iter++)
+	for (auto iter = block.odd.begin(); iter != block.odd.end(); iter++)
 		iter->fill(DEAD);
 }
 
@@ -63,20 +64,22 @@ void Life::go_next() {
 	m_generation++;
 }
 
+// surely there's a more elegant way to do this lol
 void Life::display_grid() {
-	std::string test("HELLO");
-	int16_t x = m_edges.left;
-	int16_t y = m_edges.up;
-	(void) x, (void) y;
-	for (; y <= m_edges.down; y++)
+	std::string str;
+	Coords coords;
+	
+	for (coords.y = m_edges.up; coords.y <= m_edges.down; coords.y++)
 	{
-		for (x = m_edges.left; x <= m_edges.right; x++)
+		for (uint16_t itercount = 0; itercount < BLOCK_SIZE; itercount++) // can I use iterators here too? surely.
 		{
-			BlockHalf block = grab_gen(m_grid.at(std::bit_cast<int32_t>(Coords{x, y})), CURRENT);
-			test += std::string(std::begin(test), std::end(test));
-			std::cout << (char)*(block.begin()->begin());
+			for (coords.x = m_edges.left; coords.x <= m_edges.right; coords.x++)
+			{
+				BlockHalf block = grab_gen(m_grid.at(std::bit_cast<int32_t>(coords)) ,CURRENT);
+				str += std::string(std::begin(*(block.begin() + itercount)), std::end(*(block.begin() + itercount)));
+			}
+			std::cout << str << '\n';
+			str.clear();
 		}
 	}
-	
-	std::cout << test;
 }

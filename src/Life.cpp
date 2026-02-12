@@ -23,7 +23,7 @@ void Life::init_block(int16_t x, int16_t y) {
 	for (auto iter = block.gen.at(0).begin(); iter < block.gen.at(0).end(); iter++)
 		iter->fill(DEAD);
 	for (auto iter = block.gen.at(1).begin(); iter < block.gen.at(1).end(); iter++)
-		iter->fill(ALIVE);
+		iter->fill(DEAD);
 }
 
 void Life::initialize_map() {
@@ -35,39 +35,49 @@ void Life::initialize_map() {
 	m_edges.left = -1; m_edges.right = 0; m_edges.up = -1; m_edges.down = 0;
 }
 
-// POGCHAMP
-// BlockHalf &Life::grab_gen(Block &block, Gen gen) {
-// 	if ((m_generation % 2 == 0 && gen == CURRENT)|| (m_generation % 2 != 0 && gen == NEXT))
-// 		return block.even;
-// 	else
-// 		return block.odd;
-// }
+void Life::set_node(Coords coords, int16_t x, int16_t y, CellState state, Gen gen) {
+	if (coords.x < m_edges.left || coords.x > m_edges.right || coords.y < m_edges.up || coords.y > m_edges.down)
+	{
+		std::cout << "out of current board bounds\n";
+		return;
+	}
+	if (x < 0 || x >= BLOCK_SIZE || y < 0 || y >= BLOCK_SIZE)
+	{
+		std::cout << "out of current block bounds\n";
+		return;
+	}
 
-// void Life::set_node(Coords coords, int16_t x, int16_t y, CellState state, Gen gen) {
-// 	if (coords.x < m_edges.left || coords.x > m_edges.right 
-// 		|| coords.y < m_edges.up || coords.y > m_edges.down)
-// 	{
-// 		std::cout << "out of current board bounds\n";
-// 		return;
-// 	}
-// 	if (x < 0 || x >= BLOCK_SIZE || y < 0 || y >= BLOCK_SIZE)
-// 	{
-// 		std::cout << "out of current block bounds\n";
-// 		return;
-// 	}
+	auto &block = m_grid.at(std::bit_cast<int32_t>(coords));
+	block.gen.at(at_gen(gen))[y][x] = state;
+}
 
-// 	BlockHalf &block = grab_gen(m_grid.at(std::bit_cast<int32_t>(coords)), gen);
-// 	block[y][x] = state;
-// }
+void Life::go_next() {
+	m_generation++;
+}
 
-// void Life::go_next() {
-// 	m_generation++;
-// }
+uint32_t Life::at_gen(Gen gen) {
+	return ((m_generation + gen) % 2);
+}
 
-// // surely there's a more elegant way to do this lol
+// Slightly better than the first version. Whooo
 void Life::display_grid() {
-	auto test = m_grid.at(std::bit_cast<int32_t>(Coords{0, 0}));
-	(void) test;
+	std::string str;
+	str.reserve(BLOCK_SIZE * (m_edges.right - m_edges.left) + 1);
 
-	std::cout << *test.gen.at(0).begin()->begin();
+	for (int16_t y = m_edges.up; y <= m_edges.down; y++)
+	{
+		for (auto itercount = 0; itercount < BLOCK_SIZE; itercount++)
+		{
+			int16_t x = m_edges.left;
+			for (; x <= m_edges.right; x++)
+			{
+				const auto &block = m_grid.at(std::bit_cast<int32_t>(Coords{x, y}));
+				str += std::string(
+					std::begin(*(block.gen.at(at_gen(CURRENT)).begin() + itercount)), 
+					std::end(*(block.gen.at(at_gen(CURRENT)).begin() + itercount)));
+			}
+			std::cout << str << '\n';
+			str.erase();
+		}
+	}
 }

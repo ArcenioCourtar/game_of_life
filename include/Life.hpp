@@ -9,8 +9,6 @@
 enum CellState { DEAD = '0', ALIVE = '1' };
 enum Gen { CURRENT = 0, NEXT = 1 };
 
-typedef std::array<std::array<char, BLOCK_SIZE>, BLOCK_SIZE> BlockHalf;
-
 // [y][x] For more efficient traversal of the grid
 // I hate this lmao, but it works?
 struct Block {
@@ -70,16 +68,13 @@ class Life {
 		Edges m_edges;
 		uint32_t m_generation;
 		
-
+		uint32_t at_gen(Gen gen);
 		// initial 4 blocks
 		void initialize_map();
 		// initialize block
 		void init_block(int16_t x, int16_t y);
 		// expand map when an edge is reached and a cell across the edge becomes live
 		void expand_map();
-		// get reference to correct map version
-		BlockHalf &grab_gen(Block &block, Gen gen);
-
 
 		// print location of live cells
 		void get_live_cells();

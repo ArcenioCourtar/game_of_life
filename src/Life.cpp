@@ -52,7 +52,15 @@ void Life::set_node(Coords coords, int16_t x, int16_t y, CellState state, Gen ge
 }
 
 void Life::go_next() {
-	m_generation++;
+	// for (auto iter1 = m_grid.begin(); iter1 != m_grid.end(); iter1++)
+	// {
+	// 	for (auto iter2 = iter1->second.gen.at(CURRENT).begin(); 
+	// 		iter2 != iter1->second.gen.at(CURRENT).end(); iter2++)
+	// 	{
+	// 		for (auto)
+	// 	}
+	// }
+	// m_generation++;
 }
 
 uint32_t Life::at_gen(Gen gen) {

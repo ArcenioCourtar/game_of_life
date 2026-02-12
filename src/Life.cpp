@@ -21,9 +21,9 @@ void Life::init_block(int16_t x, int16_t y) {
 	auto new_block = m_grid.insert({std::bit_cast<int32_t>(Coords{x, y}), Block()});
 	auto &block = new_block.first->second;
 	for (auto iter = block.gen.at(0).begin(); iter < block.gen.at(0).end(); iter++)
-		iter->fill(0);
+		iter->fill(DEAD);
 	for (auto iter = block.gen.at(1).begin(); iter < block.gen.at(1).end(); iter++)
-		iter->fill(0);
+		iter->fill(ALIVE);
 }
 
 void Life::initialize_map() {
@@ -66,20 +66,8 @@ void Life::initialize_map() {
 
 // // surely there's a more elegant way to do this lol
 void Life::display_grid() {
-	std::string str;
-	Coords coords;
-	
-	for (coords.y = m_edges.up; coords.y <= m_edges.down; coords.y++)
-	{
-		for (uint16_t itercount = 0; itercount < BLOCK_SIZE; itercount++) // can I use iterators here too? surely.
-		{
-			for (coords.x = m_edges.left; coords.x <= m_edges.right; coords.x++)
-			{
-				BlockHalf block = grab_gen(m_grid.at(std::bit_cast<int32_t>(coords)), CURRENT);
-				str += std::string(std::begin(*(block.begin() + itercount)), std::end(*(block.begin() + itercount)));
-			}
-			std::cout << str << '\n';
-			str.clear();
-		}
-	}
+	auto test = m_grid.at(std::bit_cast<int32_t>(Coords{0, 0}));
+	(void) test;
+
+	std::cout << *test.gen.at(0).begin()->begin();
 }

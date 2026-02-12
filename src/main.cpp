@@ -17,5 +17,5 @@ int main() {
 	// std::cout << '\n';
 	// data.set_node(Coords{0, 0}, 3, 0, ALIVE, NEXT);
 	// data.go_next();
-	// data.display_grid();
+	data.display_grid();
 }

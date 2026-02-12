@@ -12,6 +12,7 @@ enum Gen { CURRENT = 0, NEXT = 1 };
 typedef std::array<std::array<char, BLOCK_SIZE>, BLOCK_SIZE> BlockHalf;
 
 // [y][x] For more efficient traversal of the grid
+// I hate this lmao, but it works?
 struct Block {
 	std::array<std::array<std::array<char, BLOCK_SIZE>, BLOCK_SIZE>, 2> gen;
 };

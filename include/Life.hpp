@@ -13,8 +13,7 @@ typedef std::array<std::array<char, BLOCK_SIZE>, BLOCK_SIZE> BlockHalf;
 
 // [y][x] For more efficient traversal of the grid
 struct Block {
-	std::array<std::array<char, BLOCK_SIZE>, BLOCK_SIZE> even;
-	std::array<std::array<char, BLOCK_SIZE>, BLOCK_SIZE> odd;
+	std::array<std::array<std::array<char, BLOCK_SIZE>, BLOCK_SIZE>, 2> gen;
 };
 
 // x y order

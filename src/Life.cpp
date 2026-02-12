@@ -75,7 +75,7 @@ void Life::display_grid() {
 		{
 			for (coords.x = m_edges.left; coords.x <= m_edges.right; coords.x++)
 			{
-				BlockHalf block = grab_gen(m_grid.at(std::bit_cast<int32_t>(coords)) ,CURRENT);
+				BlockHalf block = grab_gen(m_grid.at(std::bit_cast<int32_t>(coords)), CURRENT);
 				str += std::string(std::begin(*(block.begin() + itercount)), std::end(*(block.begin() + itercount)));
 			}
 			std::cout << str << '\n';

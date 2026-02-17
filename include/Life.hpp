@@ -11,9 +11,7 @@ enum Gen { CURRENT = 0, NEXT = 1 };
 
 // [y][x] For more efficient traversal of the grid
 // I hate this lmao, but it works?
-struct Block {
-	std::array<std::array<std::array<char, BLOCK_SIZE>, BLOCK_SIZE>, 2> gen;
-};
+typedef std::array<std::array<std::array<CellState, BLOCK_SIZE>, BLOCK_SIZE>, 2> block_t;
 
 // x y order
 struct Coords {
@@ -64,7 +62,7 @@ class Life {
 
 
 	private:
-		std::unordered_map<int32_t, Block> m_grid;
+		std::unordered_map<int32_t, block_t> m_grid;
 		Edges m_edges;
 		uint32_t m_generation;
 		

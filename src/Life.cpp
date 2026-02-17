@@ -18,11 +18,11 @@ Life::~Life() {
 
 // make variable names more clear maybe
 void Life::init_block(int16_t x, int16_t y) {
-	auto new_block = m_grid.insert({std::bit_cast<int32_t>(Coords{x, y}), Block()});
+	auto new_block = m_grid.insert({std::bit_cast<int32_t>(Coords{x, y}), block_t()});
 	auto &block = new_block.first->second;
-	for (auto iter = block.gen.at(0).begin(); iter < block.gen.at(0).end(); iter++)
+	for (auto iter = block.at(0).begin(); iter < block.at(0).end(); iter++)
 		iter->fill(DEAD);
-	for (auto iter = block.gen.at(1).begin(); iter < block.gen.at(1).end(); iter++)
+	for (auto iter = block.at(1).begin(); iter < block.at(1).end(); iter++)
 		iter->fill(DEAD);
 }
 
@@ -48,7 +48,7 @@ void Life::set_node(Coords coords, int16_t x, int16_t y, CellState state, Gen ge
 	}
 
 	auto &block = m_grid.at(std::bit_cast<int32_t>(coords));
-	block.gen.at(at_gen(gen))[y][x] = state;
+	block.at(at_gen(gen))[y][x] = state;
 }
 
 void Life::go_next() {
@@ -60,7 +60,7 @@ void Life::go_next() {
 	// 		for (auto)
 	// 	}
 	// }
-	// m_generation++;
+	m_generation++;
 }
 
 uint32_t Life::at_gen(Gen gen) {
@@ -81,8 +81,8 @@ void Life::display_grid() {
 			{
 				const auto &block = m_grid.at(std::bit_cast<int32_t>(Coords{x, y}));
 				str += std::string(
-					std::begin(*(block.gen.at(at_gen(CURRENT)).begin() + itercount)), 
-					std::end(*(block.gen.at(at_gen(CURRENT)).begin() + itercount)));
+					std::begin(*(block.at(at_gen(CURRENT)).begin() + itercount)), 
+					std::end(*(block.at(at_gen(CURRENT)).begin() + itercount)));
 			}
 			std::cout << str << '\n';
 			str.erase();

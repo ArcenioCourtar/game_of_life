@@ -1,23 +1,28 @@
 #pragma once
 #include <unordered_map>	// map
 #include <utility>			// pair
+#include <tuple>			// tuple
+#include <vector>			// vector
 #include <array>			// arrays with iterators baybee
 #include <cstdint>			// force integer sizes of specific size
 #include <bit>
 #define BLOCK_SIZE 4
 
+// This REALLY shouldn't be stored in a single class. But I'm trying to interact with C++ features y'all
+
 enum CellState { DEAD = '0', ALIVE = '1' };
 enum Gen { CURRENT = 0, NEXT = 1 };
-
-// [y][x] For more efficient traversal of the grid
-// I hate this lmao, but it works?
-typedef std::array<std::array<std::array<CellState, BLOCK_SIZE>, BLOCK_SIZE>, 2> block_t;
 
 // x y order
 struct Coords {
 	int16_t x;
 	int16_t y;
 };
+
+// [y][x] For more efficient traversal of the grid
+// I hate this lmao, but it works?
+typedef std::array<std::array<std::array<CellState, BLOCK_SIZE>, BLOCK_SIZE>, 2> block_t;
+typedef std::tuple<Coords, int16_t, int16_t> cellinfo_t;
 
 // defines edges of current board
 /*
@@ -56,15 +61,19 @@ class Life {
 		void display_grid();
 		// display specific section of grid
 		void display_grid(int16_t left, int16_t right, int16_t down, int16_t up);
+		// display live node coordinates
+		void display_live_coords();
 
 		// placeholder for testing random bs
 		void test_f();
 
 
 	private:
+		std::vector<cellinfo_t> m_live;
 		std::unordered_map<int32_t, block_t> m_grid;
 		Edges m_edges;
 		uint32_t m_generation;
+		bool m_init;
 		
 		uint32_t at_gen(Gen gen);
 		// initial 4 blocks

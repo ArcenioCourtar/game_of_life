@@ -6,6 +6,7 @@
 int main() {
 	Life data;
 
+	// regular setup
 	data.set_node(Coords{-1, -1}, 0, 0, ALIVE, CURRENT);
 	data.set_node(Coords{-1, -1}, 1, 1, ALIVE, CURRENT);
 	data.set_node(Coords{-1, -1}, 2, 2, ALIVE, CURRENT);
@@ -16,9 +17,6 @@ int main() {
 	data.set_node(Coords{-1, 0}, 3, 0, ALIVE, CURRENT);
 	data.set_node(Coords{-1, 0}, 3, 1, ALIVE, CURRENT);
 	data.set_node(Coords{-1, 0}, 3, 2, ALIVE, CURRENT);
-	data.set_node(Coords{-1, 0}, 3, 2, ALIVE, NEXT);
 	data.display_grid();
-	std::cout << '\n';
-	data.go_next();
-	data.display_grid();
+	data.display_live_coords();
 }

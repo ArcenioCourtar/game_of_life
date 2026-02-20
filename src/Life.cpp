@@ -71,9 +71,10 @@ void Life::set_node(Coords coords, int16_t x, int16_t y, CellState state, Gen ge
 // time to index things whee
 void Life::go_next() {
 	m_init = true;
-	std::vector<cellinfo_t> test;
+	std::set<int64_t> test;
 	for (auto iter = m_live.begin(); iter != m_live.end(); iter++) {
-		test.push_back(std::make_tuple(Coords{0,0}, 0, 0));
+		REEEE test2{std::get<0>(*iter), std::get<1>(*iter), std::get<2>(*iter)};
+		test.insert(std::bit_cast<int64_t>(test2));
 	}
 	m_generation++;
 }

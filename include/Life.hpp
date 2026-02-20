@@ -19,6 +19,12 @@ struct Coords {
 	int16_t y;
 };
 
+struct REEEE {
+	Coords c;
+	int16_t x;
+	int16_t y;
+};
+
 // [y][x] For more efficient traversal of the grid
 // I hate this lmao, but it works?
 typedef std::array<std::array<std::array<CellState, BLOCK_SIZE>, BLOCK_SIZE>, 2> block_t;

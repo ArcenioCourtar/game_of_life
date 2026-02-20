@@ -54,7 +54,7 @@ void Life::set_node(Coords coords, int16_t x, int16_t y, CellState state, Gen ge
 				but in the final implementation they will be.
 			*/
 			if (m_init == false)
-				m_live.push_back(std::make_tuple(coords, x, y));
+				m_live.push_back(cellinfo{coords, x, y});
 			if (m_init == true) {
 				// STUFF
 			}
@@ -68,14 +68,56 @@ void Life::set_node(Coords coords, int16_t x, int16_t y, CellState state, Gen ge
 	}
 }
 
-// time to index things whee
+void Life::find_surroundings(const cellinfo &info, std::set<int64_t> &list) {
+	for (int16_t y = info.y - 1; y <= info.y + 1; y++) {
+		for (int16_t x = info.x - 1; x <= info.x + 1; x++) {
+			cellinfo info_cpy{info.c, x, y};
+			if (x < 0) {info_cpy.c.x--; info_cpy.x = BLOCK_SIZE - 1;}
+			if (y < 0) {info_cpy.c.y--; info_cpy.y = BLOCK_SIZE - 1;}
+			if (x >= BLOCK_SIZE) {info_cpy.c.x++; info_cpy.x = 0;}
+			if (y >= BLOCK_SIZE) {info_cpy.c.y++; info_cpy.y = 0;}
+			list.insert(std::bit_cast<int64_t>(info_cpy));
+		}
+	}
+}
+
+unsigned int Life::check_surroundings(const cellinfo &info) {
+	unsigned int count = 0;
+	for (int16_t y = info.y - 1; y <= info.y + 1; y++) {
+		for (int16_t x = info.x - 1; x <= info.x + 1; x++) {
+			cellinfo info_cpy{info.c, x, y};
+			if (x < 0) {info_cpy.c.x--; info_cpy.x = BLOCK_SIZE - 1;}
+			if (y < 0) {info_cpy.c.y--; info_cpy.y = BLOCK_SIZE - 1;}
+			if (x >= BLOCK_SIZE) {info_cpy.c.x++; info_cpy.x = 0;}
+			if (y >= BLOCK_SIZE) {info_cpy.c.y++; info_cpy.y = 0;}
+			try {
+				[[maybe_unused]] auto &temp = 
+				m_grid.at(at_gen(CURRENT)).at(std::bit_cast<int32_t>(info_cpy.c)).at(info_cpy.y).at(info_cpy.x);
+				std::cout << "ey";
+				if (temp == DEAD)
+					std::cout << "yo";
+				else
+					std::cout << "oy";
+			}
+			catch(const std::exception& e) {  }
+		}
+	}
+	std::cout << count << '\n';
+	return count;
+}
+
+// Time to index things whee
 void Life::go_next() {
 	m_init = true;
-	std::set<int64_t> test;
+	std::set<int64_t> to_be_checked;
 	for (auto iter = m_live.begin(); iter != m_live.end(); iter++) {
-		REEEE test2{std::get<0>(*iter), std::get<1>(*iter), std::get<2>(*iter)};
-		test.insert(std::bit_cast<int64_t>(test2));
+		find_surroundings(*iter, to_be_checked);
 	}
+	for (auto iter = to_be_checked.begin(); iter != to_be_checked.end(); iter++) {
+		[[maybe_unused]] unsigned int result = check_surroundings(std::bit_cast<cellinfo>(*iter));
+	}
+	
+	std::cout << "To be checked amount: " << to_be_checked.size() << '\n';
 	m_generation++;
 }
 
@@ -101,10 +143,10 @@ void Life::display_grid() {
 
 void Life::display_live_coords() {
 	for (auto iter = m_live.begin(); iter != m_live.end(); iter++) {
-		Coords coords = std::bit_cast<Coords>(std::get<0>(*iter));
+		Coords coords = iter->c;
 		std::cout <<
 		"Block: " << coords.x << ' ' << coords.y <<
-		" internal: " << std::get<1>(*iter) << ' ' << std::get<2>(*iter) << '\n';
+		" internal: " << iter->x << ' ' << iter->y << '\n';
 	}
 	std::cout << m_live.size() << '\n';
 }

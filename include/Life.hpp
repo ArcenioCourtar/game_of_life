@@ -1,6 +1,7 @@
 #pragma once
 #include <unordered_map>	// map
 #include <utility>			// pair
+#include <set>				// set
 #include <tuple>			// tuple
 #include <vector>			// vector
 #include <array>			// arrays with iterators baybee
@@ -19,7 +20,7 @@ struct Coords {
 	int16_t y;
 };
 
-struct REEEE {
+struct cellinfo {
 	Coords c;
 	int16_t x;
 	int16_t y;
@@ -28,7 +29,6 @@ struct REEEE {
 // [y][x] For more efficient traversal of the grid
 // I hate this lmao, but it works?
 typedef std::array<std::array<std::array<CellState, BLOCK_SIZE>, BLOCK_SIZE>, 2> block_t;
-typedef std::tuple<Coords, int16_t, int16_t> cellinfo_t;
 
 // defines edges of current board
 /*
@@ -75,7 +75,7 @@ class Life {
 
 
 	private:
-		std::vector<cellinfo_t> m_live;
+		std::vector<cellinfo> m_live;
 		std::unordered_map<int32_t, block_t> m_grid;
 		Edges m_edges;
 		uint32_t m_generation;
@@ -86,6 +86,10 @@ class Life {
 		void initialize_map();
 		// initialize block
 		void init_block(int16_t x, int16_t y);
+		// locate and store 9 surrounding tiles
+		void find_surroundings(const cellinfo &info, std::set<int64_t> &list);
+		// count live tiles surrounding target location
+		unsigned int check_surroundings(const cellinfo &info);
 		// expand map when an edge is reached and a cell across the edge becomes live
 		void expand_map();
 

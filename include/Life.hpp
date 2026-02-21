@@ -7,7 +7,7 @@
 #include <array>			// arrays with iterators baybee
 #include <cstdint>			// force integer sizes of specific size
 #include <bit>
-#define BLOCK_SIZE 4
+#define BLOCK_SIZE 8
 
 // This REALLY shouldn't be stored in a single class. But I'm trying to interact with C++ features y'all
 
@@ -18,12 +18,20 @@ enum Gen { CURRENT = 0, NEXT = 1 };
 struct Coords {
 	int16_t x;
 	int16_t y;
+
+	bool operator==(const Coords &s) const {
+		return (x == s.x && y == s.y);
+	}
 };
 
 struct cellinfo {
 	Coords c;
 	int16_t x;
 	int16_t y;
+
+	bool operator==(const cellinfo &s) const {
+		return (c == s.c && x == s.x && y == s.y);
+	}
 };
 
 // [y][x] For more efficient traversal of the grid
@@ -54,8 +62,6 @@ class Life {
 
 		~Life();
 
-		// set node using global coordinates
-		void set_node(int16_t x, int16_t y, CellState state);
 		// set node locating block and picking coords in there
 		void set_node(Coords coords, int16_t x, int16_t y, CellState state, Gen gen);
 		// convert "raw" coords into one that adheres to the block structure

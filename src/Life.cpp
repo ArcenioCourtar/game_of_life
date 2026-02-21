@@ -55,8 +55,15 @@ void Life::set_node(Coords coords, int16_t x, int16_t y, CellState state, Gen ge
 			*/
 			if (m_init == false)
 				m_live.push_back(cellinfo{coords, x, y});
+			// The path taken once the simulation has started
 			if (m_init == true) {
-				// STUFF
+				if (block.at(at_gen(CURRENT)).at(y).at(x) == ALIVE) {
+					if (state == DEAD)
+						m_live.erase(std::find(m_live.begin(), m_live.end(), cellinfo{coords, x, y}));
+				} else {
+					if (state == ALIVE)
+						m_live.push_back(cellinfo{coords, x, y});
+				}
 			}
 		}
 		catch(const std::exception& e) {
@@ -91,18 +98,16 @@ unsigned int Life::check_surroundings(const cellinfo &info) {
 			if (x >= BLOCK_SIZE) {info_cpy.c.x++; info_cpy.x = 0;}
 			if (y >= BLOCK_SIZE) {info_cpy.c.y++; info_cpy.y = 0;}
 			try {
-				[[maybe_unused]] auto &temp = 
-				m_grid.at(at_gen(CURRENT)).at(std::bit_cast<int32_t>(info_cpy.c)).at(info_cpy.y).at(info_cpy.x);
-				std::cout << "ey";
-				if (temp == DEAD)
-					std::cout << "yo";
-				else
-					std::cout << "oy";
+				auto &temp = 
+				m_grid.at(std::bit_cast<int32_t>(info_cpy.c)).at(at_gen(CURRENT)).at(info_cpy.y).at(info_cpy.x);
+				if (std::bit_cast<int64_t>(info_cpy) == std::bit_cast<int64_t>(info))
+					continue;
+				if (temp == ALIVE)
+					count++;
 			}
-			catch(const std::exception& e) {  }
+			catch(const std::exception& e) { }
 		}
 	}
-	std::cout << count << '\n';
 	return count;
 }
 
@@ -110,14 +115,23 @@ unsigned int Life::check_surroundings(const cellinfo &info) {
 void Life::go_next() {
 	m_init = true;
 	std::set<int64_t> to_be_checked;
-	for (auto iter = m_live.begin(); iter != m_live.end(); iter++) {
+	for (auto iter = m_live.begin(); iter != m_live.end(); iter++)
 		find_surroundings(*iter, to_be_checked);
-	}
 	for (auto iter = to_be_checked.begin(); iter != to_be_checked.end(); iter++) {
-		[[maybe_unused]] unsigned int result = check_surroundings(std::bit_cast<cellinfo>(*iter));
+		cellinfo info{std::bit_cast<cellinfo>(*iter)};
+		unsigned int result = check_surroundings(info);
+		if (m_grid.at(std::bit_cast<int32_t>(info.c)).at(at_gen(CURRENT)).at(info.y).at(info.x) == ALIVE) {
+			if (result < 2 || result > 3)
+				set_node(info.c, info.x, info.y, DEAD, NEXT);
+			else
+				set_node(info.c, info.x, info.y, ALIVE, NEXT);
+		} else {
+			if (result == 3)
+				set_node(info.c, info.x, info.y, ALIVE, NEXT);
+			else
+				set_node(info.c, info.x, info.y, DEAD, NEXT);
+		}
 	}
-	
-	std::cout << "To be checked amount: " << to_be_checked.size() << '\n';
 	m_generation++;
 }
 

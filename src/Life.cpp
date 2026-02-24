@@ -5,13 +5,12 @@
 #include <tuple>
 #include <algorithm>
 #include <set>
+#include <string>
 
 // Constructors
 
 // default map will be 4 blocks big
-Life::Life() : m_generation(0), m_init(false) {
-	initialize_map();
-}
+Life::Life() : m_edges(Edges{0, 0, 0, 0}), m_generation(0), m_init(false) {}
 
 // Destructors
 
@@ -27,15 +26,22 @@ void Life::init_block(int16_t x, int16_t y) {
 		iter->fill(DEAD);
 	for (auto iter = block.at(NEXT).begin(); iter < block.at(NEXT).end(); iter++)
 		iter->fill(DEAD);
+	if (x > m_edges.right)
+		m_edges.right = x;
+	if (x < m_edges.left)
+		m_edges.left = x;
+	if (y > m_edges.down)
+		m_edges.down = y;
+	if (y < m_edges.up)
+		m_edges.right = y;
 }
 
 void Life::initialize_map() {
-	init_block(0, 0);
-	init_block(-1, 0);
-	init_block(-1, -1);
-	init_block(0, -1);
-
-	m_edges.left = -1; m_edges.right = 0; m_edges.up = -1; m_edges.down = 0;
+	for (auto iter = m_live.begin(); iter != m_live.end(); iter++) {
+		if (m_grid.find(std::bit_cast<int32_t>(iter->c)) == m_grid.end())
+			init_block(iter->c.x, iter->c.y);
+		set_node(iter->c, iter->x, iter->y, ALIVE, CURRENT);
+	}
 }
 
 // try/catch blocks baybee
@@ -44,18 +50,6 @@ void Life::set_node(Coords coords, int16_t x, int16_t y, CellState state, Gen ge
 		auto &block = m_grid.at(std::bit_cast<int32_t>(coords));
 		try {
 			block.at(at_gen(gen)).at(y).at(x) = state;
-			/* This path works as intended as long as three assumptions are true:
-				- Not setting a single node to "ALIVE" twice
-				- All nodes you're changing are in CURRENT gen
-				- not setting any nodes to "DEAD" when they've previously been set to "ALIVE"
-				(I might change this behavior later)
-
-				While testing one of these conditions might not be true,
-				but in the final implementation they will be.
-			*/
-			if (m_init == false)
-				m_live.push_back(cellinfo{coords, x, y});
-			// The path taken once the simulation has started
 			if (m_init == true) {
 				if (block.at(at_gen(CURRENT)).at(y).at(x) == ALIVE) {
 					if (state == DEAD)
@@ -67,11 +61,11 @@ void Life::set_node(Coords coords, int16_t x, int16_t y, CellState state, Gen ge
 			}
 		}
 		catch(const std::exception& e) {
-			std::cout << "Out of block bounds\n";
+			// std::cout << "Out of block bounds\n";
 		}
 	}
 	catch(const std::exception& e) {
-		std::cout << "Block does not exist\n";
+		init_block(coords.x, coords.y);
 	}
 }
 
@@ -119,7 +113,7 @@ void Life::go_next() {
 		find_surroundings(*iter, to_be_checked);
 	for (auto iter = to_be_checked.begin(); iter != to_be_checked.end(); iter++) {
 		cellinfo info{std::bit_cast<cellinfo>(*iter)};
-		unsigned int result = check_surroundings(info);
+		[[maybe_unused]] unsigned int result = check_surroundings(info);
 		if (m_grid.at(std::bit_cast<int32_t>(info.c)).at(at_gen(CURRENT)).at(info.y).at(info.x) == ALIVE) {
 			if (result < 2 || result > 3)
 				set_node(info.c, info.x, info.y, DEAD, NEXT);
@@ -163,4 +157,24 @@ void Life::display_live_coords() {
 		" internal: " << iter->x << ' ' << iter->y << '\n';
 	}
 	std::cout << m_live.size() << '\n';
+}
+
+void Life::parse_file(std::ifstream &file) {
+	int16_t xcount = 0, ycount = 0;
+	std::string str;
+	while (std::getline(file, str)) {
+		xcount = 0;
+		for (auto iter = str.begin(); iter != str.end(); iter++) {
+			if ((*iter) == '1')
+				m_live.push_back(convert_coords(xcount, ycount));
+			xcount++;
+		}
+		ycount++;
+	}
+}
+
+cellinfo Life::convert_coords(int16_t x, int16_t y) {
+	return (cellinfo{
+		Coords{static_cast<int16_t>(x / BLOCK_SIZE), static_cast<int16_t>(y / BLOCK_SIZE)}, 
+		static_cast<int16_t>(x % BLOCK_SIZE), static_cast<int16_t>(y % BLOCK_SIZE)});
 }

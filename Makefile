@@ -35,7 +35,7 @@ fsan: $(ALL_OBJ)
 	$(CC) $(CFLAGS) $(ALL_OBJ) -fsanitize=address -o $(NAME)
 
 run: $(NAME)
-	./$(NAME)
+	./$(NAME) maps/test_map
 
 valg: $(NAME)
 	valgrind ./$(NAME)

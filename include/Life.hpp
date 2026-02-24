@@ -7,6 +7,7 @@
 #include <array>			// arrays with iterators baybee
 #include <cstdint>			// force integer sizes of specific size
 #include <bit>
+#include <fstream>
 #define BLOCK_SIZE 8
 
 // This REALLY shouldn't be stored in a single class. But I'm trying to interact with C++ features y'all
@@ -75,7 +76,10 @@ class Life {
 		void display_grid(int16_t left, int16_t right, int16_t down, int16_t up);
 		// display live node coordinates
 		void display_live_coords();
+		// assign nodes from parsing input file
+		void parse_file(std::ifstream &file);
 
+		void initialize_map();
 		// placeholder for testing random bs
 		void test_f();
 
@@ -88,8 +92,6 @@ class Life {
 		bool m_init;
 		
 		uint32_t at_gen(Gen gen);
-		// initial 4 blocks
-		void initialize_map();
 		// initialize block
 		void init_block(int16_t x, int16_t y);
 		// locate and store 9 surrounding tiles
@@ -98,6 +100,8 @@ class Life {
 		unsigned int check_surroundings(const cellinfo &info);
 		// expand map when an edge is reached and a cell across the edge becomes live
 		void expand_map();
+		// convert global coords to coords in accordance to block structure
+		cellinfo convert_coords(int16_t x, int16_t y);
 
 		// print location of live cells
 		void get_live_cells();

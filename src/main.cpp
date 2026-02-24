@@ -2,17 +2,23 @@
 #include <iostream>
 #include <vector>
 #include <iterator>
+#include <fstream>
 
-int main() {
+int main(int argc, char** argv) {
+	if (argc != 2) {
+		std::cout << "please pass file to parse\n";
+		return (0);
+	}
+	std::ifstream file;
+	file.open(argv[1]);
+	if (!file.is_open()) {
+		std::cout << "can't open file xd\n";
+		return (0);
+	}
 	Life data;
+	data.parse_file(file);
+	data.initialize_map();
 
-	// regular setup
-	data.set_node(Coords{0, 0}, 0, 0, ALIVE, CURRENT);
-	data.set_node(Coords{0, 0}, 1, 0, ALIVE, CURRENT);
-	data.set_node(Coords{0, 0}, 2, 0, ALIVE, CURRENT);
-	data.set_node(Coords{0, 0}, 1, 1, ALIVE, CURRENT);
-	data.set_node(Coords{0, 0}, 2, 1, ALIVE, CURRENT);
-	data.set_node(Coords{0, 0}, 3, 1, ALIVE, CURRENT);
 	data.display_grid();
 	data.display_live_coords();
 	data.go_next();

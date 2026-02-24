@@ -108,13 +108,21 @@ unsigned int Life::check_surroundings(const cellinfo &info) {
 // Time to index things whee
 void Life::go_next() {
 	m_init = true;
+	CellState state;
 	std::set<int64_t> to_be_checked;
 	for (auto iter = m_live.begin(); iter != m_live.end(); iter++)
 		find_surroundings(*iter, to_be_checked);
 	for (auto iter = to_be_checked.begin(); iter != to_be_checked.end(); iter++) {
 		cellinfo info{std::bit_cast<cellinfo>(*iter)};
 		[[maybe_unused]] unsigned int result = check_surroundings(info);
-		if (m_grid.at(std::bit_cast<int32_t>(info.c)).at(at_gen(CURRENT)).at(info.y).at(info.x) == ALIVE) {
+		try {
+			 state = m_grid.at(std::bit_cast<int32_t>(info.c)).at(at_gen(CURRENT)).at(info.y).at(info.x);
+		}
+		catch(const std::exception& e) {
+			state = DEAD;
+		}
+		
+		if (state == ALIVE) {
 			if (result < 2 || result > 3)
 				set_node(info.c, info.x, info.y, DEAD, NEXT);
 			else

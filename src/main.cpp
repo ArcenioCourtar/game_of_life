@@ -20,14 +20,10 @@ int main(int argc, char** argv) {
 	data.initialize_map();
 
 	data.display_grid();
-	data.display_live_coords();
 	data.go_next();
 	data.display_grid();
-	data.display_live_coords();
 	data.go_next();
 	data.display_grid();
-	data.display_live_coords();
 	data.go_next();
 	data.display_grid();
-	data.display_live_coords();
 }

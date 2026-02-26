@@ -42,6 +42,8 @@ void Life::initialize_map() {
 			init_block(iter->c.x, iter->c.y);
 		set_node(iter->c, iter->x, iter->y, ALIVE, CURRENT);
 	}
+	if (m_grid.empty())
+		init_block(0, 0);
 }
 
 // try/catch blocks baybee
@@ -61,7 +63,7 @@ void Life::set_node(Coords coords, int16_t x, int16_t y, CellState state, Gen ge
 			}
 		}
 		catch(const std::exception& e) {
-			// std::cout << "Out of block bounds\n";
+			std::cout << "Out of block bounds\n";
 		}
 	}
 	catch(const std::exception& e) {
@@ -133,11 +135,11 @@ void Life::go_next() {
 				set_node(info.c, info.x, info.y, DEAD, NEXT);
 		}
 	}
-	for (auto iter = m_grid.at(CURRENT).begin(); iter != m_grid.at(CURRENT).end(); iter++) {
-		for (auto iter2 = iter->begin(); iter2 != iter->end(); iter2++) {
+	// Some patterns will cause my current solution to leave certain live cells on the prior board untouched
+	// I fill the prior board with 0s to prevent this from being an issue, but there's probably a more elegant solution
+	for (auto iter = m_grid.begin(); iter != m_grid.end(); iter++)
+		for (auto iter2 = iter->second.at(at_gen(CURRENT)).begin(); iter2 != iter->second.at(at_gen(CURRENT)).end(); iter2++)
 			iter2->fill(DEAD);
-		}
-	}
 	m_generation++;
 }
 

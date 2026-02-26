@@ -179,7 +179,7 @@ void Life::parse_file(std::ifstream &file) {
 	while (std::getline(file, str)) {
 		xcount = 0;
 		for (auto iter = str.begin(); iter != str.end(); iter++) {
-			if ((*iter) == '1')
+			if ((*iter) == ALIVE)
 				m_live.push_back(convert_coords(xcount, ycount));
 			xcount++;
 		}

@@ -9,6 +9,10 @@
 #include <bit>
 #include <fstream>
 #define BLOCK_SIZE 8
+#define INSTRUCTIONS \
+"commands:\nh: display commands again\nd/enter: display current gen\ng: generate new gen\n\
+l: show list of live coords\n[number]: repeat commands [number] times\nexit: it exits\n\
+These commands can be combined, so dg10 woud display and generate the next 10 gens\n"
 
 // This REALLY shouldn't be stored in a single class. But I'm trying to interact with C++ features y'all
 

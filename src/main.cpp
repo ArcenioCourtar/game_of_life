@@ -7,16 +7,17 @@
 void simulation_loop(Life &data) {
 	std::string input;
 
+	std::cout << "\033[2J\033[1;1H";
+	data.display_grid();
 	std::cout << INSTRUCTIONS;
 	while (input.compare("exit") && input.compare("q")) {
 		std::getline(std::cin, input);
 		[[maybe_unused]] int16_t count = 0;
 
 		if (input.empty()) {
-			 std::cout << "\033[2J\033[1;1H";
-			data.display_grid();
-			data.display_live_coords();
+			std::cout << "\033[2J\033[1;1H";
 			data.go_next();
+			data.display_grid();
 			continue;
 		}
 	}

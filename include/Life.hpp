@@ -12,11 +12,13 @@
 #define INSTRUCTIONS \
 "commands:\nh: display commands again\nd/enter: display current gen\ng: generate new gen\n\
 l: show list of live coords\n[number]: repeat commands [number] times\nexit | q: it exits\n\
-These commands can be combined, so dg10 woud display and generate the next 10 gens\n"
+These commands can be combined, so dg10 woud display and generate the next 10 gens\n\
+NONE OF THESE FEATURES ARE CURRENTLY IMPLEMENTED. just press enter to go to the next gen\n\
+or type q or exit to quit"
 
 // This REALLY shouldn't be stored in a single class. But I'm trying to interact with C++ features y'all
 
-enum CellState { DEAD = '0', ALIVE = '1' };
+enum CellState { DEAD = ' ', ALIVE = '#' };
 enum Gen { CURRENT = 0, NEXT = 1 };
 
 // x y order

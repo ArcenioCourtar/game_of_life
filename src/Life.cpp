@@ -44,7 +44,7 @@ void Life::initialize_map() {
 	}
 	if (m_grid.empty())
 		init_block(0, 0);
-	m_default_line.append(BLOCK_SIZE, '0');
+	m_default_line.append(BLOCK_SIZE, DEAD);
 }
 
 // try/catch blocks baybee
@@ -158,15 +158,19 @@ void Life::display_grid() {
 		for (auto itercount = 0; itercount < BLOCK_SIZE; itercount++) {
 			int16_t x = m_edges.left;
 			for (; x <= m_edges.right; x++) {
-				const auto &block = m_grid.at(std::bit_cast<int32_t>(Coords{x, y}));
-				std::cout << std::string(
+				try {
+					const auto &block = m_grid.at(std::bit_cast<int32_t>(Coords{x, y}));
+					std::cout << std::string(
 					std::begin(*(block.at(at_gen(CURRENT)).begin() + itercount)), 
 					std::end(*(block.at(at_gen(CURRENT)).begin() + itercount)));
+				} catch(const std::exception& e) {
+					std::cout << m_default_line;
+				}
 			}
 			std::cout << '\n';
 		}
 	}
-	std::cout << "blocks allocated: " << m_grid.size() << '\n';
+	std::cout << "generation: " << m_generation << '\n';
 }
 
 void Life::display_live_coords() {
@@ -185,7 +189,7 @@ void Life::parse_file(std::ifstream &file) {
 	while (std::getline(file, str)) {
 		xcount = 0;
 		for (auto iter = str.begin(); iter != str.end(); iter++) {
-			if ((*iter) == ALIVE)
+			if ((*iter) == '1')
 				m_live.push_back(convert_coords(xcount, ycount));
 			xcount++;
 		}

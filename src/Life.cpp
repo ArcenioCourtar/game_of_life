@@ -33,7 +33,7 @@ void Life::init_block(int16_t x, int16_t y) {
 	if (y > m_edges.down)
 		m_edges.down = y;
 	if (y < m_edges.up)
-		m_edges.right = y;
+		m_edges.up = y;
 }
 
 void Life::initialize_map() {

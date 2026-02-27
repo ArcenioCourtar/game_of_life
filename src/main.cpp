@@ -8,16 +8,19 @@ void simulation_loop(Life &data) {
 	std::string input;
 
 	std::cout << INSTRUCTIONS;
-	while (input.compare("exit")) {
+	while (input.compare("exit") && input.compare("q")) {
 		std::getline(std::cin, input);
-		std::cout << input << '\n';
 		[[maybe_unused]] int16_t count = 0;
 
 		if (input.empty()) {
-			data.display_grid(); 
+			 std::cout << "\033[2J\033[1;1H";
+			data.display_grid();
+			data.display_live_coords();
+			data.go_next();
 			continue;
 		}
 	}
+	std::cout << "bye chat\n";
 }
 
 int main(int argc, char** argv) {

@@ -44,6 +44,7 @@ void Life::initialize_map() {
 	}
 	if (m_grid.empty())
 		init_block(0, 0);
+	m_default_line.append(BLOCK_SIZE, '0');
 }
 
 // try/catch blocks baybee
@@ -67,7 +68,11 @@ void Life::set_node(Coords coords, int16_t x, int16_t y, CellState state, Gen ge
 		}
 	}
 	catch(const std::exception& e) {
-		init_block(coords.x, coords.y);
+		if (state == ALIVE)
+		{
+			init_block(coords.x, coords.y);
+			set_node(coords, x, y, state, gen);
+		}
 	}
 }
 
@@ -161,6 +166,7 @@ void Life::display_grid() {
 			std::cout << '\n';
 		}
 	}
+	std::cout << "blocks allocated: " << m_grid.size() << '\n';
 }
 
 void Life::display_live_coords() {
@@ -170,7 +176,7 @@ void Life::display_live_coords() {
 		"Block: " << coords.x << ' ' << coords.y <<
 		" internal: " << iter->x << ' ' << iter->y << '\n';
 	}
-	std::cout << m_live.size() << '\n';
+	std::cout << "live nodes: " << m_live.size() << '\n';
 }
 
 void Life::parse_file(std::ifstream &file) {

@@ -8,10 +8,10 @@
 #include <cstdint>			// force integer sizes of specific size
 #include <bit>
 #include <fstream>
-#define BLOCK_SIZE 8
+#define BLOCK_SIZE 4
 #define INSTRUCTIONS \
 "commands:\nh: display commands again\nd/enter: display current gen\ng: generate new gen\n\
-l: show list of live coords\n[number]: repeat commands [number] times\nexit: it exits\n\
+l: show list of live coords\n[number]: repeat commands [number] times\nexit | q: it exits\n\
 These commands can be combined, so dg10 woud display and generate the next 10 gens\n"
 
 // This REALLY shouldn't be stored in a single class. But I'm trying to interact with C++ features y'all
@@ -69,8 +69,6 @@ class Life {
 
 		// set node locating block and picking coords in there
 		void set_node(Coords coords, int16_t x, int16_t y, CellState state, Gen gen);
-		// convert "raw" coords into one that adheres to the block structure
-		// somefunction()
 
 		// go next
 		void go_next();
@@ -91,6 +89,7 @@ class Life {
 	private:
 		std::vector<cellinfo> m_live;
 		std::unordered_map<int32_t, block_t> m_grid;
+		std::string m_default_line;
 		Edges m_edges;
 		uint32_t m_generation;
 		bool m_init;
